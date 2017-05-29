@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "express": "^4.13.3",
-    "johnny-five": "^0.9.11",
+    "johnny-five": "^0.10.13",
     "path": "^0.12.7",
     "socket.io": "^1.3.7"
   }
