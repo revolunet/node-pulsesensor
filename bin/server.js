@@ -8,17 +8,21 @@ var five = require("johnny-five"),
 app.use(express.static('public'));
 server.listen(8082);
 
-var board = new five.Board({port: '/dev/cu.usbmodem1411'});
+var board = new five.Board();
 
-io.on('connection', function(socket){
-  board.on("ready", function() {
+board.on("ready", function() {
+  board.info('Board', 'ready');
+  io.on('connection', function(socket){
+    board.info('socket.io', 'connection');
+
     var sensor = new five.Sensor({
       pin: "A0",
-      freq: 250
+      freq: 10
     });
 
     sensor.scale([ 0, 100 ]).on("change", function() {
       socket.emit('pulse', this.scaled)
     });
+
   });
 });
