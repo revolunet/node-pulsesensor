@@ -32,6 +32,7 @@ $(function () {
 
     if (data > (pulse_data[totalPoints - 10] + peak_detect_offset)) {
       freq = Date.now() - lastPeak;
+      // debounce
       if (freq > peak_mininum_interval) {
         lastPeak = Date.now();
         peakDiffs.push(freq);
