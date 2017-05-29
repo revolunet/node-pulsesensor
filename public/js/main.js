@@ -36,6 +36,10 @@ $(function () {
         // remove aberations
         if (heart_rate > 50 && heart_rate < 150) {
           $('#heartrate').html(heart_rate);
+          $('span.heart').css('fontSize', '32pt');
+          setTimeout(() => {
+            $('span.heart').css('fontSize', '22pt');
+          }, 100)
         } else {
           $('#heartrate').html("0");
         }
