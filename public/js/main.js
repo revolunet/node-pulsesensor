@@ -1,3 +1,6 @@
+var peak_detect_offset = 20;
+var peak_mininum_interval = 300;
+
 $(function () {
   var socket = io.connect('http://localhost:8082'),
       pulse_data = [],
@@ -7,29 +10,42 @@ $(function () {
       peakDiffs = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       freq = 0,
       y_min = 20,
-      y_max = 50;
+      y_max = 50,
+      rates = [];
+
+  const sum = arr => (arr.reduce((acc, cur) => (acc + cur), 0))
+  const avg = arr => sum(arr) / arr.length
+
+  var drawFinished = true;
 
   socket.on('pulse', function (data) {
+    if (!drawFinished) {
+      return;
+    }
+    drawFinished = false;
+
     pulse_data.push(data)
     pulse_data.shift();
 
     plot.setData([ parse_data() ]);
     plot.draw();
 
-    if (data < pulse_data[totalPoints - 2] - .2) {
+    if (data > (pulse_data[totalPoints - 10] + peak_detect_offset)) {
       freq = Date.now() - lastPeak;
-      lastPeak = Date.now();
-
-      peakDiffs.push(freq);
-      peakDiffs.shift();
-
-      var peak_sum = 0;
-      for (var i = 0; i < peakDiffs.length; i++) {
-        peak_sum += peakDiffs[i];
+      if (freq > peak_mininum_interval) {
+        lastPeak = Date.now();
+        peakDiffs.push(freq);
+        peakDiffs.shift();
+        var heart_rate = parseInt(60 * 1000 / freq * 100 / 100, 10)
+        // remove aberations
+        if (heart_rate > 50 && heart_rate < 150) {
+          $('#heartrate').html(heart_rate);
+        } else {
+          $('#heartrate').html("0");
+        }
       }
-      heart_rate = parseInt(60 / ((peak_sum / peakDiffs.length) / 1000), 10);
-      $('#heartrate').html(heart_rate);
     }
+    drawFinished = true;
   });
 
   // pre-fill pulse_data with all zeroes
