@@ -18,6 +18,8 @@ $(function () {
 
   var drawFinished = true;
 
+  var drawFinished = true;
+
   socket.on('pulse', function (data) {
     if (!drawFinished) {
       return;
@@ -91,13 +93,14 @@ $(function () {
         xaxis: { show: false },
         grid: { show: true, borderWidth: 0 },
     };
-
-    plot = $.plot($("#placeholder"), [ parse_data() ], options);
+    if ($("#placeholder").height() > 0) {
+      plot = $.plot($("#placeholder"), [ parse_data() ], options);
+    }
   }
 
   $('#placeholder').css({
     width: '100%',
-    height: $('body').height() + 'px'
+    height: '100%'
   })
 
   setup(y_min, y_max);

@@ -30,3 +30,7 @@ span.heart {
    height: 40px;
    text-align: center;
 }
+
+#placeholder {
+  height: 100%;
+}
